@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/card_bg"
+    app:strokeWidth="3dp"
+    app:strokeColor="@color/border_normal">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 3D Viewport -->
+        <io.github.sceneview.SceneView
+            android:id="@+id/sceneView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Overlay Canvas for Connector Lines -->
+        <com.example.infusoryapp.ui.ConnectorOverlayView
+            android:id="@+id/connectorOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Container for 2D Labels -->
+        <FrameLayout
+            android:id="@+id/labelsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Top Control Bar Header -->
+        <LinearLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="8dp"
+            android:background="@color/overlay_bg">
+
+            <TextView
+                android:id="@+id/tvModelName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Model"
+                android:textColor="@color/text_white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Mode Badge -->
+            <TextView
+                android:id="@+id/tvModeBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MOVE/RESIZE"
+                android:textColor="@color/text_white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_mode_badge_normal"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp"
+                android:layout_marginEnd="6dp" />
+
+            <!-- Interaction Mode Toggle Button -->
+            <ImageButton
+                android:id="@+id/btnToggleInteraction"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_rotate"
+                android:contentDescription="Toggle Interaction Mode"
+                app:tint="@color/text_white"
+                android:layout_marginEnd="4dp" />
+
+            <!-- Label Toggle Button -->
+            <ImageButton
+                android:id="@+id/btnToggleLabels"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_label"
+                android:contentDescription="Toggle Labels"
+                app:tint="@color/text_white"
+                android:layout_marginEnd="4dp" />
+
+            <!-- Close Button -->
+            <ImageButton
+                android:id="@+id/btnClose"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Close Model"
+                app:tint="@color/text_white" />
+
+        </LinearLayout>
+
+        <!-- Floating Container Resize Pill (Bottom-Right Frame Control) -->
+        <LinearLayout
+            android:id="@+id/containerResizeBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_mode_badge_normal"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="2dp">
+
+            <!-- Zoom Out Container Button (-) -->
+            <ImageButton
+                android:id="@+id/btnZoomOut"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_zoom_out"
+                android:contentDescription="Shrink Container"
+                app:tint="@color/text_white" />
+
+            <!-- Zoom In Container Button (+) -->
+            <ImageButton
+                android:id="@+id/btnZoomIn"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_zoom_in"
+                android:contentDescription="Enlarge Container"
+                app:tint="@color/text_white" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</com.google.android.material.card.MaterialCardView>

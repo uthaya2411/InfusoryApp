@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#6200EE</color>
+    <color name="primary_dark">#3700B3</color>
+    <color name="accent">#03DAC6</color>
+    <color name="dark_bg">#121212</color>
+    <color name="card_bg">#1E1E2E</color>
+    <color name="overlay_bg">#99000000</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_secondary">#B0BEC5</color>
+    <color name="border_normal">#448AFF</color>
+    <color name="border_interactive">#FF4081</color>
+    <color name="label_bg">#CC0D47A1</color>
+    <color name="connector_line">#FF007AFF</color>
+</resources>
