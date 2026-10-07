@@ -75,6 +75,9 @@ class ModelContainerView @JvmOverloads constructor(
                     val currentScale = node.scale.x
                     val newScale = (currentScale * scaleFactor).coerceIn(0.2f, 5.0f)
                     node.scale = Float3(newScale, newScale, newScale)
+                    if (isLabelsVisible) {
+                        updateLabelsProjection()
+                    }
                 }
             }
 
@@ -246,6 +249,43 @@ class ModelContainerView @JvmOverloads constructor(
         binding.connectorOverlay.setConnections(emptyList())
     }
 
+    private fun transformLocalTranslation(
+        translation: FloatArray,
+        rotationDegrees: Float3,
+        scale: Float
+    ): FloatArray {
+        val x = translation[0] * scale
+        val y = translation[1] * scale
+        val z = translation[2] * scale
+
+        val radX = Math.toRadians(rotationDegrees.x.toDouble())
+        val radY = Math.toRadians(rotationDegrees.y.toDouble())
+        val radZ = Math.toRadians(rotationDegrees.z.toDouble())
+
+        // Rotate around X
+        val cosX = Math.cos(radX)
+        val sinX = Math.sin(radX)
+        val y1 = y * cosX - z * sinX
+        val z1 = y * sinX + z * cosX
+        val x1 = x
+
+        // Rotate around Y
+        val cosY = Math.cos(radY)
+        val sinY = Math.sin(radY)
+        val x2 = x1 * cosY + z1 * sinY
+        val z2 = -x1 * sinY + z1 * cosY
+        val y2 = y1
+
+        // Rotate around Z
+        val cosZ = Math.cos(radZ)
+        val sinZ = Math.sin(radZ)
+        val x3 = x2 * cosZ - y2 * sinZ
+        val y3 = x2 * sinZ + y2 * cosZ
+        val z3 = z2
+
+        return floatArrayOf(x3.toFloat(), y3.toFloat(), z3.toFloat())
+    }
+
     @Suppress("DEPRECATION")
     private fun updateLabelsProjection() {
         val connections = mutableListOf<LineConnection>()
@@ -255,17 +295,22 @@ class ModelContainerView @JvmOverloads constructor(
         for (label in partLabels) {
             val tv = labelTextViews[label] ?: continue
 
-            // Resolve 3D world position of named GLB node from SceneView node graph
+            // Resolve 3D world position of named GLB node with active node rotation and scale
             val targetNode = node.nodes.firstOrNull { it.name == label.nodeName }
-            val worldPosVector = if (targetNode != null) {
-                Vector3(targetNode.worldPosition.x, targetNode.worldPosition.y, targetNode.worldPosition.z)
-            } else if (label.localTranslation != null) {
-                val t = label.localTranslation
-                val scale = node.scale.x
+            val worldPosVector = if (label.localTranslation != null) {
+                val rotatedOffset = transformLocalTranslation(label.localTranslation, node.rotation, node.scale.x)
                 Vector3(
-                    node.worldPosition.x + t[0] * scale,
-                    node.worldPosition.y + t[1] * scale,
-                    node.worldPosition.z + t[2] * scale
+                    node.worldPosition.x + rotatedOffset[0],
+                    node.worldPosition.y + rotatedOffset[1],
+                    node.worldPosition.z + rotatedOffset[2]
+                )
+            } else if (targetNode != null) {
+                val targetLocal = floatArrayOf(targetNode.position.x, targetNode.position.y, targetNode.position.z)
+                val rotatedOffset = transformLocalTranslation(targetLocal, node.rotation, node.scale.x)
+                Vector3(
+                    node.worldPosition.x + rotatedOffset[0],
+                    node.worldPosition.y + rotatedOffset[1],
+                    node.worldPosition.z + rotatedOffset[2]
                 )
             } else {
                 Vector3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z)
@@ -341,12 +386,18 @@ class ModelContainerView @JvmOverloads constructor(
                         )
                         x = newX
                         y = newY
+                        if (isLabelsVisible) {
+                            updateLabelsProjection()
+                        }
                     } else {
                         // Interaction Mode: Rotate 3D model inside viewport
                         modelNode?.let { node ->
                             val rotX = (node.rotation.x + deltaY * 0.5f) % 360f
                             val rotY = (node.rotation.y + deltaX * 0.5f) % 360f
                             node.rotation = Float3(rotX, rotY, node.rotation.z)
+                            if (isLabelsVisible) {
+                                updateLabelsProjection()
+                            }
                         }
                     }
 
